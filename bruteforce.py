@@ -14,6 +14,8 @@ def import_csv(filename):
 
 
 budget_max = 500  # Budget maximum
+actions_dict = {}
+actions_dict_percentile = {}
 actions_list = []
 prices_list = []
 combination_best = 0
@@ -25,21 +27,12 @@ count_combinations = 0
 actions = import_csv("data/actions.csv")
 
 
-def find_action(this_action):
-    # find a specific action in the action list
-    global actions
-    for element in actions:
-        if element["action"] == this_action:
-            return element
-    return None
-
-
 def total_combination(this_combination):
     # calculate the total result of a set of actions (cost + bonus)
     global budget_max
     cost = 0
     for this_action in this_combination:
-        cost += int(find_action(this_action)["price"])
+        cost += int(actions_dict[this_action])
         if cost > budget_max:
             return None
     return cost
@@ -49,19 +42,21 @@ def bonus_combination(this_combination):
     # calculate the bonus of an actions set
     bonus = 0
     for this_action in this_combination:
-        bonus += int(find_action(this_action)["price"]) * (
-                int(find_action(this_action)["percentile"]) / 100
+        bonus += int(actions_dict[this_action]) * (
+                int(actions_dict_percentile[this_action]) / 100
         )
     return bonus
 
 
 for action in actions:
     actions_list.append(action["action"])
+    actions_dict[action['action']] = int(action['price'])
+    actions_dict_percentile[action['action']] = int(action['percentile'])
 
 for action in actions:
     prices_list.append(action["price"])
 
-# Find the cheapest action to determinate the maximum number of action
+# Find the cheapest actions to determinate the maximum number of action
 # that can be buy
 prices_list.sort()
 
@@ -75,25 +70,22 @@ for el in prices_list:
     else:
         break
 
-actions_max = elements
+actions_max = elements + 1
 
-print(f"Il y a {actions_max} éléments maximum.")
-
-print(f"Action list: {actions_list}")
 for combination_length in range(1, actions_max):
     combination = permutations(actions_list, combination_length)
+    print(f"New range: {combination_length} / {actions_max}")
     for el in combination:
         count_combinations += 1
         if total_combination(el):
-            bonus_global = total_combination(el) + bonus_combination(el)
+            bonus_global = bonus_combination(el)
             if bonus_global > bonus_best:
                 combination_best = list(el)
-                bonus_best = total_combination(
-                    combination_best
-                ) + bonus_combination(combination_best)
+                bonus_best = bonus_global
                 print(
-                    f"--- Combinaison {count_combinations} ---\n{el}\n"
-                    f"Est à notre portée pour un coût de "
+                    f"--- Combination {count_combinations} ---\n{el}\n"
+                    f"Can be buy for "
                     f"{total_combination(combination_best)} "
-                    f"et un bénéfice de {bonus_combination(combination_best)}"
+                    f"and generate a bonus of "
+                    f"{bonus_combination(combination_best)}"
                 )
