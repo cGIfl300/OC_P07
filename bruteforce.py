@@ -16,41 +16,41 @@ def import_csv(filename):
 budget_max = 500  # Budget maximum
 actions_list = []
 prices_list = []
-combinaison_gagnante = 0
-retour_global = 0
-retour_gagnante = 0
-maximum_actions = 0
-compteur_combinaisons = 0
+combination_best = 0
+bonus_global = 0
+bonus_best = 0
+actions_max = 0
+count_combinations = 0
 
 actions = import_csv("data/actions.csv")
 
 
-def found_action(action):
-    # found a specific action in the action list
+def find_action(this_action):
+    # find a specific action in the action list
     global actions
     for element in actions:
-        if element["action"] == action:
+        if element["action"] == this_action:
             return element
     return None
 
 
-def cout_portefeuille(portefeuille):
+def total_combination(this_combination):
     # calculate the total result of a set of actions (cost + bonus)
     global budget_max
-    cout = 0
-    for action in portefeuille:
-        cout += int(found_action(action)["price"])
-        if cout > budget_max:
+    cost = 0
+    for this_action in this_combination:
+        cost += int(find_action(this_action)["price"])
+        if cost > budget_max:
             return None
-    return cout
+    return cost
 
 
-def bonus_portefeuille(portefeuille):
+def bonus_combination(this_combination):
     # calculate the bonus of an actions set
     bonus = 0
-    for action in portefeuille:
-        bonus += int(found_action(action)["price"]) * (
-            int(found_action(action)["percentile"]) / 100
+    for this_action in this_combination:
+        bonus += int(find_action(this_action)["price"]) * (
+                int(find_action(this_action)["percentile"]) / 100
         )
     return bonus
 
@@ -61,12 +61,13 @@ for action in actions:
 for action in actions:
     prices_list.append(action["price"])
 
-
-# Find the cheapest action to determinate the maximum number of action that can be buy
+# Find the cheapest action to determinate the maximum number of action
+# that can be buy
 prices_list.sort()
 
 budget = 0
 elements = 0
+
 for el in prices_list:
     budget += int(prices_list[elements])
     if budget < budget_max:
@@ -74,23 +75,25 @@ for el in prices_list:
     else:
         break
 
-maximum_actions = elements
+actions_max = elements
 
-print(f"Il y a {maximum_actions} éléments maximum.")
+print(f"Il y a {actions_max} éléments maximum.")
 
 print(f"Action list: {actions_list}")
-for nombre_dactions in range(1, maximum_actions):
-    combi = permutations(actions_list, nombre_dactions)
-    for el in combi:
-        compteur_combinaisons += 1
-        if cout_portefeuille(el):
-            retour_global = cout_portefeuille(el) + bonus_portefeuille(el)
-            if retour_global > retour_gagnante:
-                combinaison_gagnante = list(el)
-                retour_gagnante = cout_portefeuille(
-                    combinaison_gagnante
-                ) + bonus_portefeuille(combinaison_gagnante)
+for combination_length in range(1, actions_max):
+    combination = permutations(actions_list, combination_length)
+    for el in combination:
+        count_combinations += 1
+        if total_combination(el):
+            bonus_global = total_combination(el) + bonus_combination(el)
+            if bonus_global > bonus_best:
+                combination_best = list(el)
+                bonus_best = total_combination(
+                    combination_best
+                ) + bonus_combination(combination_best)
                 print(
-                    f"""--- Combinaison {compteur_combinaisons} ---\n{el}
-Est à notre portée pour un coût de {cout_portefeuille(combinaison_gagnante)} et un bénéfice de {bonus_portefeuille(combinaison_gagnante)}"""
+                    f"--- Combinaison {count_combinations} ---\n{el}\n"
+                    f"Est à notre portée pour un coût de "
+                    f"{total_combination(combination_best)} "
+                    f"et un bénéfice de {bonus_combination(combination_best)}"
                 )
