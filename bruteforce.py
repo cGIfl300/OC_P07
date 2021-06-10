@@ -2,6 +2,18 @@
 import csv
 from itertools import permutations
 
+budget_max = 500  # Budget maximum
+actions_dict = {}
+actions_dict_percentile = {}
+actions_list = []
+prices_list = []
+process_list = []
+combination_best = 0
+bonus_global = 0
+bonus_best = 0
+actions_max = 0
+count_combinations = 0
+
 
 def import_csv(filename):
     # Import a CSV, return a table
@@ -11,20 +23,6 @@ def import_csv(filename):
         for row in reader:
             every_action.append(row)
     return every_action
-
-
-budget_max = 500  # Budget maximum
-actions_dict = {}
-actions_dict_percentile = {}
-actions_list = []
-prices_list = []
-combination_best = 0
-bonus_global = 0
-bonus_best = 0
-actions_max = 0
-count_combinations = 0
-
-actions = import_csv("data/actions.csv")
 
 
 def total_combination(this_combination):
@@ -47,6 +45,8 @@ def bonus_combination(this_combination):
         )
     return bonus
 
+
+actions = import_csv("data/actions.csv")
 
 for action in actions:
     actions_list.append(action["action"])
