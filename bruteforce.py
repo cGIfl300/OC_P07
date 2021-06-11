@@ -71,6 +71,7 @@ for el in prices_list:
         break
 
 actions_max = elements + 1
+# From this point big_O = 159
 
 for combination_length in range(1, actions_max):
     combination = permutations(actions_list, combination_length)
@@ -89,3 +90,4 @@ for combination_length in range(1, actions_max):
                     f"and generate a bonus of "
                     f"{bonus_combination(combination_best)}"
                 )
+# Total big_O = 243_290_200_000_000_000_159 (Maximum Q_O for 20 actions)
