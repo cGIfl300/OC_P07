@@ -90,4 +90,4 @@ for combination_length in range(1, actions_max):
                     f"and generate a bonus of "
                     f"{bonus_combination(combination_best)}"
                 )
-# Total big_O = 243_290_200_000_000_000_159 (Maximum Q_O for 20 actions)
+# Total big_O = 243_290_200_000_000_000_159 (Maximum big_O for 20 actions)
