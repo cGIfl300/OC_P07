@@ -23,9 +23,12 @@ def import_csv(filename):
 
 
 actions = import_csv("data/actions.csv")
+
 for i in actions:
     i["percentile"] = int(i["percentile"])
+
 optimized_list = sorted(actions, key=itemgetter("percentile"), reverse=True)
+
 print(optimized_list)
 
 while not jackpot:
@@ -34,9 +37,7 @@ while not jackpot:
         jackpot = True
     else:
         budget -= int(actual_value["price"])
-        total_return += (
-            int(actual_value["price"]) * actual_value["percentile"] / 100
-        )
+        total_return += int(actual_value["price"]) * actual_value["percentile"] / 100
         combination.append(actual_value)
 
 print(
