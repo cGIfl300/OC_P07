@@ -27,6 +27,7 @@ def import_csv(filename):
 
 def total_combination(this_combination):
     # calculate the total result of a set of actions (cost + bonus)
+    # big_O = 1
     global budget_max
     cost = 0
     for this_action in this_combination:
@@ -38,10 +39,11 @@ def total_combination(this_combination):
 
 def bonus_combination(this_combination):
     # calculate the bonus of an actions set
+    # big_O = 1 + len(this_combination)
     bonus = 0
     for this_action in this_combination:
         bonus += int(actions_dict[this_action]) * (
-                int(actions_dict_percentile[this_action]) / 100
+            int(actions_dict_percentile[this_action]) / 100
         )
     return bonus
 
@@ -50,8 +52,8 @@ actions = import_csv("data/actions.csv")
 
 for action in actions:
     actions_list.append(action["action"])
-    actions_dict[action['action']] = int(action['price'])
-    actions_dict_percentile[action['action']] = int(action['percentile'])
+    actions_dict[action["action"]] = int(action["price"])
+    actions_dict_percentile[action["action"]] = int(action["percentile"])
 
 for action in actions:
     prices_list.append(action["price"])
@@ -73,6 +75,7 @@ for el in prices_list:
 actions_max = elements + 1
 # From this point big_O = 159
 
+# Here is the heart of bruteforce, trying every combination
 for combination_length in range(1, actions_max):
     combination = permutations(actions_list, combination_length)
     print(f"New range: {combination_length} / {actions_max}")
@@ -91,3 +94,4 @@ for combination_length in range(1, actions_max):
                     f"{bonus_combination(combination_best)}"
                 )
 # Total big_O = 243_290_200_000_000_000_159 (Maximum big_O for 20 actions)
+# big_O = len(actions_list) + 161 + exp(len(actions)) (is exponential)
