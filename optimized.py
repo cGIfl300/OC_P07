@@ -49,5 +49,6 @@ print(
 # Big_O:
 # N = Nombre d'actions dans la base de données (1000)
 # ** le nombre maximum d'actions achetables corresponds à l'intégralité du catalogue
-# 5 * N
-# Pour 1000 actions: 5000
+# 4 * N à 5 * N
+# Pour 1000 actions: 4000 (max 5000)
+# python -m trace --count optimized.py
