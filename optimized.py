@@ -22,25 +22,32 @@ def import_csv(filename):
     return every_action
 
 
-actions = import_csv("data/actions.csv")
+actions = import_csv("data/dataset1.csv")
+# actions = import_csv("data/dataset2.csv") # Big_O = Nombre d'actions dans la base de données (1000)
 
 for i in actions:
-    i["percentile"] = int(i["percentile"])
+    i["percentile"] = float(i["percentile"]) # Big_O = Nombre d'actions dans la base de données (1000)
 
-optimized_list = sorted(actions, key=itemgetter("percentile"), reverse=True)
-
-print(optimized_list)
+optimized_list = sorted(actions, key=itemgetter("percentile"))
 
 while not jackpot:
     actual_value = optimized_list.pop()
-    if budget - int(actual_value["price"]) < 0:
+    if budget - float(actual_value["price"]) < 0:
         jackpot = True
     else:
-        budget -= int(actual_value["price"])
-        total_return += int(actual_value["price"]) * actual_value["percentile"] / 100
+        budget -= float(actual_value["price"])
+        total_return += (
+            float(actual_value["price"]) * actual_value["percentile"] / 100
+        )
         combination.append(actual_value)
 
 print(
     f"Décision : {combination}\nPour un montant de {500 - budget} et un"
     f" retour de {total_return}"
 )
+
+# Big_O:
+# N = Nombre d'actions dans la base de données (1000)
+# ** le nombre maximum d'actions achetables corresponds à l'intégralité du catalogue
+# 5 * N
+# Pour 1000 actions: 5000
